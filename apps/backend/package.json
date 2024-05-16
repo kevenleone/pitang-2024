@@ -1,0 +1,16 @@
+{
+  "name": "@pitang/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node index.js",
+    "dev": "npm start --watch"
+  },
+  "author": "Keven Leone",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
