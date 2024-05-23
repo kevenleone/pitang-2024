@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import z from 'zod';
 
+import prismaClient from '../utils/prismaClient.mjs';
+
 const shortnerSchema = z.object({
   createdAt: z.date().optional(),
   createdBy: z.string().optional(),
@@ -10,21 +12,23 @@ const shortnerSchema = z.object({
   url: z.string().url('O link que você passou está inválido.'),
 });
 
-let shortners = [];
-
 export default class ShortnerController {
-  destroy(request, response) {
+  async destroy(request, response) {
     const { id } = request.params;
 
-    shortners = shortners.filter((shortner) => shortner.id !== id);
+    try {
+      await prismaClient.shortner.delete({ where: { id } });
 
-    response.status(204).send();
+      response.status(204).send();
+    } catch (error) {
+      response.status(404).send({ message: 'Shortner not found.' });
+    }
   }
 
-  getOne(request, response) {
+  async getOne(request, response) {
     const { id } = request.params;
 
-    const shortner = shortners.find((shortner) => shortner.id === id);
+    const shortner = await prismaClient.shortner.findUnique({ where: { id } });
 
     if (!shortner) {
       return response.status(404).send({ message: 'Shortner not found.' });
@@ -33,7 +37,9 @@ export default class ShortnerController {
     response.send(shortner);
   }
 
-  index(request, response) {
+  async index(request, response) {
+    const shortners = await prismaClient.shortner.findMany();
+
     response.send({
       page: 1,
       pageSize: 20,
@@ -42,11 +48,28 @@ export default class ShortnerController {
     });
   }
 
-  redirect(request, response) {
-    response.send('redirect');
+  async redirect(request, response) {
+    const { hash } = request.params;
+
+    const shortner = await prismaClient.shortner.findUnique({
+      where: { hash },
+    });
+
+    if (!shortner) {
+      throw new Error('Invalid Hash');
+    }
+
+    // Captura de informações do usuário.
+
+    await prismaClient.shortner.update({
+      data: { ...shortner, hits: shortner.hits + 1 },
+      where: { id: shortner.id },
+    });
+
+    response.redirect(shortner.url);
   }
 
-  store(request, response) {
+  async store(request, response) {
     const shortner = request.body;
 
     const { success, data, error } = shortnerSchema.safeParse({
@@ -57,35 +80,36 @@ export default class ShortnerController {
       return response.status(400).send(error);
     }
 
-    const [hash, ...id] = crypto.randomUUID().split('-');
+    const [hash] = crypto.randomUUID().split('-');
 
-    data.createdAt = new Date();
-    data.createdBy = 'System';
-    data.hash = hash;
-    data.hits = 0;
-    data.id = id.join('-');
+    const newShortner = await prismaClient.shortner.create({
+      data: {
+        hash,
+        url: data.url,
+        user: {
+          connectOrCreate: {
+            create: {
+              email: 'keven.leone@qwe.com',
+              name: 'Keven',
+              password: '39391931',
+            },
+            where: { email: 'keven.leone@qwe.com' },
+          },
+        },
+      },
+    });
 
-    shortners.push(data);
-
-    response.send({ message: 'store', data });
+    response.send({ message: 'store', data: newShortner });
   }
 
-  update(request, response) {
+  async update(request, response) {
     const { id } = request.params;
     const { url } = request.body;
 
-    const newShortners = shortners.map((shortner) => {
-      if (shortner.id === id) {
-        return {
-          ...shortner,
-          url,
-        };
-      }
-
-      return shortner;
+    await prismaClient.shortner.update({
+      data: { url },
+      where: { id },
     });
-
-    shortners = newShortners;
 
     response.send({ message: 'Shortner Updated' });
   }
