@@ -34,6 +34,8 @@ class UserController {
       throw new AuthenticationError('Password Invalid');
     }
 
+    delete user.password;
+
     const token = jsonwebtoken.sign(user, env.JWT_SECRET);
 
     response.send({ token });

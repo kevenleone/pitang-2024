@@ -38,12 +38,22 @@ export default class ShortnerController {
   }
 
   async index(request, response) {
-    const shortners = await prismaClient.shortner.findMany();
+    let { page = 1, pageSize = 20 } = request.query;
+
+    page = parseInt(page);
+    pageSize = parseInt(pageSize);
+
+    const skip = (page - 1) * pageSize;
+
+    const [shortnerTotalCount, shortners] = await Promise.all([
+      prismaClient.shortner.count(),
+      prismaClient.shortner.findMany({ take: pageSize, skip }),
+    ]);
 
     response.send({
-      page: 1,
-      pageSize: 20,
-      totalCount: shortners.length,
+      page,
+      pageSize,
+      totalCount: shortnerTotalCount,
       items: shortners,
     });
   }
@@ -70,6 +80,7 @@ export default class ShortnerController {
   }
 
   async store(request, response) {
+    const loggedUser = request.logged_user;
     const shortner = request.body;
 
     const { success, data, error } = shortnerSchema.safeParse({
@@ -87,17 +98,13 @@ export default class ShortnerController {
         hash,
         url: data.url,
         user: {
-          connectOrCreate: {
-            create: {
-              email: 'keven.leone@qwe.com',
-              name: 'Keven',
-              password: '39391931',
-            },
-            where: { email: 'keven.leone@qwe.com' },
-          },
+          connect: { id: loggedUser.id },
         },
       },
+      include: { user: true },
     });
+
+    delete newShortner.user.password;
 
     response.send({ message: 'store', data: newShortner });
   }
