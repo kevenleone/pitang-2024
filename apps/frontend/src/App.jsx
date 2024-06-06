@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 
+function CardTitle({ title }) {
+  return <h1>{title}</h1>;
+}
+
 function Card({ description, title, children }) {
   return (
     <div>
+      <CardTitle title={title} />
       <h1>{title}</h1>
       <p>{description}</p>
       {children}
