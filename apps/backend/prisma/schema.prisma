@@ -26,7 +26,8 @@ model Shortner {
 
 model User {
   id        String   @id @default(uuid())
-  name      String
+  firstName String
+  lastName  String
   email     String   @unique
   password  String
   createdAt DateTime @default(now())

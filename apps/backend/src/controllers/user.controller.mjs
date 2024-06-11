@@ -13,7 +13,8 @@ const authSchema = z.object({
 });
 
 const userSchema = authSchema.extend({
-  name: z.string().min(3),
+  firstName: z.string().min(3),
+  lastName: z.string().min(3),
 });
 
 class UserController {
@@ -77,9 +78,9 @@ class UserController {
   }
 
   async store(request, response) {
-    const { email, name, password } = request.body;
+    const { email } = request.body;
 
-    const user = userSchema.parse({ email, name, password });
+    const user = userSchema.parse(request.body);
 
     const userExist = await prismaClient.user.findUnique({ where: { email } });
 
@@ -101,7 +102,6 @@ class UserController {
 
   async update(request, response) {
     const { id } = request.params;
-    const { email, name, password } = request.body;
 
     let user = await prismaClient.user.findUnique({ where: { id } });
 
@@ -110,7 +110,7 @@ class UserController {
     }
 
     user = await prismaClient.user.update({
-      data: userSchema.parse({ email, name, password }),
+      data: userSchema.parse(request.body),
       where: { id },
     });
 

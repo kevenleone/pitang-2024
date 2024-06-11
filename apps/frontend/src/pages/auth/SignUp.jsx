@@ -13,13 +13,15 @@ import {
   useColorModeValue,
   Link as ChakraLink,
   FormErrorMessage,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import fetcher from '../../services/api';
 
 const signUpSchema = z.object({
   email: z.string().email(),
@@ -29,17 +31,37 @@ const signUpSchema = z.object({
 });
 
 const SignUp = () => {
+  const context = useOutletContext();
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState } = useForm({
     resolver: zodResolver(signUpSchema),
+    mode: 'onBlur',
   });
 
-  console.log(formState.errors);
+  const navigate = useNavigate();
+  const toast = useToast();
 
-  const onSignUp = (form) => {
-    console.log(form);
+  const onSignUp = async (form) => {
+    try {
+      await fetcher.post('/api/user', form);
+
+      toast({
+        status: 'success',
+        title: 'Success!',
+        description: 'Account created',
+      });
+
+      context.setEmailAddress(form.email);
+
+      navigate('/auth/signin', { replace: true });
+    } catch (error) {
+      toast({
+        status: 'error',
+        title: 'Something went wrong...',
+        description: error.cause || error.message,
+      });
+    }
   };
-
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
@@ -119,7 +141,8 @@ const SignUp = () => {
 
           <Stack spacing={10} pt={2}>
             <Button
-              isDisabled={formState.isValid}
+              isLoading={formState.isSubmitting}
+              isDisabled={!formState.isValid}
               type='submit'
               loadingText='Submitting'
               size='lg'
