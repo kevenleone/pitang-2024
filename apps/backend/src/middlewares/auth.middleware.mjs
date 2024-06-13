@@ -9,8 +9,6 @@ export function loggedUserMiddleware(request, response, next) {
 
   const [, token] = authorization.split(' ');
 
-  console.log('Test.');
-
   try {
     const jwt = jsonwebtoken.verify(token, env.JWT_SECRET);
 
@@ -21,8 +19,6 @@ export function loggedUserMiddleware(request, response, next) {
 }
 
 export default function authMiddleware(request, response, next) {
-  console.log('AQUI.');
-
   const { authorization } = request.headers;
 
   if (!authorization) {
