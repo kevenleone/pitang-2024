@@ -4,7 +4,25 @@ import AuthenticationTokenInvalid from '../exceptions/AuthenticationTokenInvalid
 import AuthenticationTokenMissing from '../exceptions/AuthenticationTokenMissing.mjs';
 import env from '../utils/env.mjs';
 
+export function loggedUserMiddleware(request, response, next) {
+  const { authorization } = request.headers;
+
+  const [, token] = authorization.split(' ');
+
+  console.log('Test.');
+
+  try {
+    const jwt = jsonwebtoken.verify(token, env.JWT_SECRET);
+
+    request.logged_user = jwt;
+  } catch (error) {}
+
+  next();
+}
+
 export default function authMiddleware(request, response, next) {
+  console.log('AQUI.');
+
   const { authorization } = request.headers;
 
   if (!authorization) {

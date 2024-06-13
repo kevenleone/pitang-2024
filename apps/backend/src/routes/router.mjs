@@ -1,9 +1,13 @@
 import { Router } from 'express';
-import authMiddleware from '../middlewares/auth.middleware.mjs';
+import authMiddleware, {
+  loggedUserMiddleware,
+} from '../middlewares/auth.middleware.mjs';
 
+const mixedRouter = Router();
 const publicRouter = Router();
 const privateRouter = Router();
 
+mixedRouter.use(loggedUserMiddleware);
 privateRouter.use(authMiddleware);
 
-export { publicRouter, privateRouter };
+export { mixedRouter, publicRouter, privateRouter };

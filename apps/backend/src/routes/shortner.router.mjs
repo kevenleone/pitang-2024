@@ -1,5 +1,5 @@
 import ShortnerController from '../controllers/shortner.controller.mjs';
-import { publicRouter, privateRouter } from './router.mjs';
+import { mixedRouter, publicRouter, privateRouter } from './router.mjs';
 
 const shortnerController = new ShortnerController();
 
@@ -15,7 +15,7 @@ privateRouter.get('/api/shortner/:id', (request, response) =>
   shortnerController.getOne(request, response)
 );
 
-privateRouter.post('/api/shortner', (request, response) =>
+mixedRouter.post('/api/shortner', (request, response) =>
   shortnerController.store(request, response)
 );
 

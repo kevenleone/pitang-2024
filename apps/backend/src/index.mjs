@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import fallbackMiddleware from './middlewares/fallback.middleware.mjs';
-import { privateRouter, publicRouter } from './routes/router.mjs';
+import { mixedRouter, privateRouter, publicRouter } from './routes/router.mjs';
 
 import './routes/shortner.router.mjs';
 import './routes/user.router.mjs';
@@ -18,6 +18,7 @@ server.use(helmet());
 server.use(morgan('dev'));
 server.use(cors());
 server.use(express.json());
+server.use(mixedRouter);
 server.use(publicRouter);
 server.use(privateRouter);
 server.use(fallbackMiddleware);

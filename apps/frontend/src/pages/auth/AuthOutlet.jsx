@@ -1,9 +1,15 @@
 import { Flex, Stack, useColorModeValue } from '@chakra-ui/react';
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
 
 const AuthOutlet = () => {
+  const context = useContext(AppContext);
   const [emailAddress, setEmailAddress] = useState('');
+
+  if (context.loggedUser) {
+    return <Navigate replace to='/admin' />;
+  }
 
   return (
     <Flex
@@ -13,7 +19,13 @@ const AuthOutlet = () => {
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
       <Stack spacing='8' mx='auto' maxW='lg' py='12' px='6'>
-        <Outlet context={{ emailAddress, setEmailAddress }} />
+        <Outlet
+          context={{
+            ...context,
+            emailAddress,
+            setEmailAddress,
+          }}
+        />
       </Stack>
     </Flex>
   );

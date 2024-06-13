@@ -48,7 +48,7 @@ const SignIn = () => {
         description: 'Logged in',
       });
 
-      sessionStorage.setItem(TOKEN_PATH, response.token);
+      context.signIn(response.token);
 
       navigate('/', { replace: true });
     } catch (error) {
@@ -58,8 +58,6 @@ const SignIn = () => {
         description: error.cause || error.message,
       });
     }
-
-    console.log(response);
   };
 
   return (

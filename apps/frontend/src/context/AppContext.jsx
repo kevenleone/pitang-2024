@@ -18,8 +18,22 @@ const AppContextProvider = ({ children }) => {
 
   const [loggedUser, setLoggedUser] = useState(parseJwt(token));
 
+  function signOut() {
+    sessionStorage.removeItem(TOKEN_PATH);
+
+    setLoggedUser(null);
+  }
+
+  function signIn(token) {
+    sessionStorage.setItem(TOKEN_PATH, token);
+
+    setLoggedUser(parseJwt(token));
+  }
+
+  console.log('Carreguei!');
+
   return (
-    <AppContext.Provider value={{ loggedUser, setLoggedUser }}>
+    <AppContext.Provider value={{ loggedUser, setLoggedUser, signOut, signIn }}>
       {children}
     </AppContext.Provider>
   );

@@ -3,6 +3,9 @@ import z from 'zod';
 
 import prismaClient from '../utils/prismaClient.mjs';
 
+const EXPIRES_1WEEK = 7;
+const EXPIRES_1MONTH = 30;
+
 const shortnerSchema = z.object({
   createdAt: z.date().optional(),
   createdBy: z.string().optional(),
@@ -69,6 +72,10 @@ export default class ShortnerController {
       throw new Error('Invalid Hash');
     }
 
+    if (new Date() > shortner.expireAt) {
+      throw new Error('Link Expired');
+    }
+
     // Captura de informações do usuário.
 
     await prismaClient.shortner.update({
@@ -82,6 +89,11 @@ export default class ShortnerController {
   async store(request, response) {
     const loggedUser = request.logged_user;
     const shortner = request.body;
+    const expireAt = new Date();
+
+    expireAt.setDate(
+      expireAt.getDate() + (loggedUser ? EXPIRES_1MONTH : EXPIRES_1WEEK)
+    );
 
     const { success, data, error } = shortnerSchema.safeParse({
       url: shortner.url,
@@ -95,16 +107,21 @@ export default class ShortnerController {
 
     const newShortner = await prismaClient.shortner.create({
       data: {
+        expireAt,
         hash,
         url: data.url,
-        user: {
-          connect: { id: loggedUser.id },
-        },
+        ...(loggedUser && {
+          user: {
+            connect: { id: loggedUser?.id },
+          },
+        }),
       },
       include: { user: true },
     });
 
-    delete newShortner.user.password;
+    if (newShortner.user) {
+      delete newShortner.user.password;
+    }
 
     response.send({ message: 'store', data: newShortner });
   }
