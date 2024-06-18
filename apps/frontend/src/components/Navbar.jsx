@@ -21,7 +21,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import Avatar from 'boring-avatars';
 
 import {
   HamburgerIcon,
@@ -31,6 +30,7 @@ import {
 } from '@chakra-ui/icons';
 import { useContext, useMemo } from 'react';
 import { AppContext } from '../context/AppContext';
+import CustomAvatar from './Avatar';
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -121,7 +121,11 @@ export default function Navbar() {
                 cursor={'pointer'}
                 minW={0}
               >
-                <Avatar size={40} name={loggedUser.firstName} variant='beam' />
+                <CustomAvatar
+                  size={40}
+                  name={loggedUser.firstName}
+                  variant='beam'
+                />
               </MenuButton>
               <MenuList>
                 <MenuItem as={Text}>Welcome, {loggedUser.firstName}</MenuItem>

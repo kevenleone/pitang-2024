@@ -18,9 +18,12 @@ const shortnerSchema = z.object({
 export default class ShortnerController {
   async destroy(request, response) {
     const { id } = request.params;
+    const loggedUser = request.logged_user;
 
     try {
-      await prismaClient.shortner.delete({ where: { id } });
+      await prismaClient.shortner.delete({
+        where: { id, userId: loggedUser.id },
+      });
 
       response.status(204).send();
     } catch (error) {
@@ -30,8 +33,11 @@ export default class ShortnerController {
 
   async getOne(request, response) {
     const { id } = request.params;
+    const loggedUser = request.logged_user;
 
-    const shortner = await prismaClient.shortner.findUnique({ where: { id } });
+    const shortner = await prismaClient.shortner.findUnique({
+      where: { id, userId: loggedUser.id },
+    });
 
     if (!shortner) {
       return response.status(404).send({ message: 'Shortner not found.' });
@@ -41,16 +47,22 @@ export default class ShortnerController {
   }
 
   async index(request, response) {
+    const loggedUser = request.logged_user;
     let { page = 1, pageSize = 20 } = request.query;
 
     page = parseInt(page);
     pageSize = parseInt(pageSize);
 
     const skip = (page - 1) * pageSize;
+    const where = { userId: loggedUser.id };
 
     const [shortnerTotalCount, shortners] = await Promise.all([
-      prismaClient.shortner.count(),
-      prismaClient.shortner.findMany({ take: pageSize, skip }),
+      prismaClient.shortner.count({ where }),
+      prismaClient.shortner.findMany({
+        skip,
+        take: pageSize,
+        where,
+      }),
     ]);
 
     response.send({
@@ -127,12 +139,13 @@ export default class ShortnerController {
   }
 
   async update(request, response) {
+    const loggedUser = request.logged_user;
     const { id } = request.params;
     const { url } = request.body;
 
     await prismaClient.shortner.update({
       data: { url },
-      where: { id },
+      where: { id, userId: loggedUser.id },
     });
 
     response.send({ message: 'Shortner Updated' });

@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 
 import { AppContext } from '../../context/AppContext';
+import { Container } from '@chakra-ui/react';
 
 const AdminOutlet = () => {
   const context = useContext(AppContext);
@@ -11,9 +12,9 @@ const AdminOutlet = () => {
   }
 
   return (
-    <div>
+    <Container maxW='4xl' mt={8}>
       <Outlet />
-    </div>
+    </Container>
   );
 };
 

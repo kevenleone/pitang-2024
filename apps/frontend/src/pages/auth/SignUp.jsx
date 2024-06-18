@@ -34,8 +34,8 @@ const SignUp = () => {
   const context = useOutletContext();
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState } = useForm({
-    resolver: zodResolver(signUpSchema),
     mode: 'onBlur',
+    resolver: zodResolver(signUpSchema),
   });
 
   const navigate = useNavigate();
