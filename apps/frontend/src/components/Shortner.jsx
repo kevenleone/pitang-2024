@@ -1,8 +1,8 @@
 import { Box, Link } from '@chakra-ui/react';
 
+import CustomAvatar from './Avatar';
 import dayjs from '../utils/dayjs';
 import env from '../utils/env';
-import CustomAvatar from './Avatar';
 
 export default function Shortner({ createdAt, hash, url, user }) {
   return (
@@ -11,11 +11,11 @@ export default function Shortner({ createdAt, hash, url, user }) {
         color='blue'
         href={`${env.VITE_BACKEND_URL}/${hash}`}
       >{`${env.VITE_BACKEND_URL}/${hash}`}</Link>
-      <p>
-        <CustomAvatar name={user?.firstName} />
+      <Box display='flex' gap={5} mt={5}>
+        <CustomAvatar size={22} name={user?.firstName} />
         {dayjs(createdAt).fromNow()} {` • `}
         <Link href={url}>{url}</Link>
-      </p>
+      </Box>
     </Box>
   );
 }

@@ -2,7 +2,7 @@ import { Code, Container, Heading, Text, Spinner } from '@chakra-ui/react';
 
 function PageRenderer({ children, emptyState, error, loading }) {
   if (error) {
-    return <Code>{error}</Code>;
+    return <Code>{error.message}</Code>;
   }
 
   if (loading) {

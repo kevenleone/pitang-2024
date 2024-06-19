@@ -62,6 +62,17 @@ export default class ShortnerController {
         skip,
         take: pageSize,
         where,
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              id: true,
+              email: true,
+              createdAt: true,
+            },
+          },
+        },
       }),
     ]);
 

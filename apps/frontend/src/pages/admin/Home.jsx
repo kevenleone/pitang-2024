@@ -1,18 +1,25 @@
 import Shortner from '../../components/Shortner';
-import useShortners from '../../hooks/useShortners';
+import { useShortners } from '../../hooks/useShortners';
 import Page from '../../components/Page';
 
 const HomeAdmin = () => {
   const {
     error,
-    loading,
-    response: { items: shortners, totalCount },
+    isLoading,
+    data: response = {
+      items: [],
+      page: 1,
+      pageSize: 20,
+      totalCount: 0,
+    },
   } = useShortners();
+
+  const { items: shortners, totalCount } = response;
 
   return (
     <Page
       error={error}
-      loading={loading}
+      loading={isLoading}
       emptyState={totalCount === 0 && 'No shortners yet...'}
       title='Shortners'
     >
