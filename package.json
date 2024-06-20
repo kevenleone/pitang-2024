@@ -1,5 +1,5 @@
 {
-  "name": "pitang",
+  "name": "pita.ng",
   "private": true,
   "scripts": {
     "build": "turbo build",

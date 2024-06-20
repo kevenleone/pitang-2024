@@ -1,6 +1,7 @@
 import { Flex, Stack, useColorModeValue } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+
 import { AppContext } from '../../context/AppContext';
 
 const AuthOutlet = () => {

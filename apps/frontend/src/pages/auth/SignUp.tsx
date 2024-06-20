@@ -18,24 +18,24 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { userSchema } from '@pita.ng/zod';
+import { AppContextState } from '../../context/AppContext';
+
 import fetcher from '../../services/api';
 
-const signUpSchema = z.object({
-  email: z.string().email(),
-  firstName: z.string().min(3).max(20),
-  lastName: z.string().min(3).max(20),
-  password: z.string().min(4),
-});
-
 const SignUp = () => {
-  const context = useOutletContext();
+  const context = useOutletContext<
+    AppContextState & {
+      emailAddress: string;
+      setEmailAddress: Dispatch<string>;
+    }
+  >();
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState } = useForm({
     mode: 'onBlur',
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(userSchema),
   });
 
   const navigate = useNavigate();

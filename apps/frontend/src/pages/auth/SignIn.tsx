@@ -16,18 +16,20 @@ import {
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
-import fetcher from '../../services/api';
-import { TOKEN_PATH } from '../../utils/constants';
+import { authSchema } from '@pita.ng/zod';
 
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(4),
-});
+import fetcher from '../../services/api';
+import { AppContextState } from '../../context/AppContext';
+import { Dispatch } from 'react';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const context = useOutletContext();
+  const context = useOutletContext<
+    AppContextState & {
+      emailAddress: string;
+      setEmailAddress: Dispatch<string>;
+    }
+  >();
   const toast = useToast();
 
   const { formState, handleSubmit, register } = useForm({
@@ -35,7 +37,7 @@ const SignIn = () => {
       email: context.emailAddress,
     },
     mode: 'onBlur',
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(authSchema),
   });
 
   const onSignIn = async (form) => {

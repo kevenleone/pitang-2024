@@ -1,6 +1,24 @@
 import { Code, Container, Heading, Text, Spinner } from '@chakra-ui/react';
 
-function PageRenderer({ children, emptyState, error, loading }) {
+import { ReactNode } from 'react';
+
+type PageRendererProps = {
+  children: ReactNode;
+  emptyState?: string;
+  error?: Error;
+  loading: boolean;
+};
+
+type Page = {
+  title: string;
+} & PageRendererProps;
+
+function PageRenderer({
+  children,
+  emptyState,
+  error,
+  loading,
+}: PageRendererProps) {
   if (error) {
     return <Code>{error.message}</Code>;
   }
@@ -16,7 +34,13 @@ function PageRenderer({ children, emptyState, error, loading }) {
   return children;
 }
 
-export default function Page({ children, error, emptyState, loading, title }) {
+export default function Page({
+  children,
+  error,
+  emptyState,
+  loading,
+  title,
+}: Page) {
   return (
     <Container>
       <Heading mb={4}>{title}</Heading>

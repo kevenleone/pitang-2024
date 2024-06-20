@@ -1,7 +1,15 @@
 import { TOKEN_PATH } from '../utils/constants';
 import env from '../utils/env';
 
-async function fetcher(url, options = {}) {
+class FetcherError extends Error {
+  original: any;
+
+  constructor() {
+    super();
+  }
+}
+
+async function fetcher(url: URL | string, options: RequestInit = {}) {
   const response = await fetch(`${env.VITE_BACKEND_URL}${url}`, {
     ...options,
     headers: {
@@ -16,7 +24,7 @@ async function fetcher(url, options = {}) {
     return data;
   }
 
-  const error = new Error();
+  const error = new FetcherError();
 
   error.cause = data.message;
   error.original = data;
@@ -24,13 +32,13 @@ async function fetcher(url, options = {}) {
   throw error;
 }
 
-fetcher.delete = function () {
+fetcher.delete = function (url: string | URL) {
   return fetcher(url, {
     method: 'DELETE',
   });
 };
 
-fetcher.post = function (url, data) {
+fetcher.post = function (url: string | URL, data: unknown) {
   return fetcher(url, {
     body: JSON.stringify(data),
     method: 'POST',
@@ -40,7 +48,7 @@ fetcher.post = function (url, data) {
   });
 };
 
-fetcher.put = function (url, data) {
+fetcher.put = function (url: string | URL, data: unknown) {
   return fetcher(url, {
     body: JSON.stringify(data),
     method: 'PUT',

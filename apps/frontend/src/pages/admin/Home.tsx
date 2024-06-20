@@ -20,7 +20,7 @@ const HomeAdmin = () => {
     <Page
       error={error}
       loading={isLoading}
-      emptyState={totalCount === 0 && 'No shortners yet...'}
+      emptyState={totalCount === 0 ? 'No shortners yet...' : undefined}
       title='Shortners'
     >
       {shortners.map((shortner, index) => (

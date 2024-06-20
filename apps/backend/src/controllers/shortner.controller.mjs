@@ -1,19 +1,12 @@
 import crypto from 'node:crypto';
-import z from 'zod';
+
+import { shortnerSchema } from '@pita.ng/zod';
+import dayjs from '@pita.ng/dayjs';
 
 import prismaClient from '../utils/prismaClient.mjs';
 
 const EXPIRES_1WEEK = 7;
 const EXPIRES_1MONTH = 30;
-
-const shortnerSchema = z.object({
-  createdAt: z.date().optional(),
-  createdBy: z.string().optional(),
-  hash: z.string().optional(),
-  hits: z.number().positive().default(0).optional(),
-  id: z.string().optional(),
-  url: z.string().url('O link que você passou está inválido.'),
-});
 
 export default class ShortnerController {
   async destroy(request, response) {
@@ -112,10 +105,12 @@ export default class ShortnerController {
   async store(request, response) {
     const loggedUser = request.logged_user;
     const shortner = request.body;
-    const expireAt = new Date();
 
-    expireAt.setDate(
-      expireAt.getDate() + (loggedUser ? EXPIRES_1MONTH : EXPIRES_1WEEK)
+    const today = dayjs();
+
+    const futureDate = today.add(
+      loggedUser ? EXPIRES_1MONTH : EXPIRES_1WEEK,
+      'days'
     );
 
     const { success, data, error } = shortnerSchema.safeParse({
@@ -130,7 +125,7 @@ export default class ShortnerController {
 
     const newShortner = await prismaClient.shortner.create({
       data: {
-        expireAt,
+        expireAt: futureDate.toISOString(),
         hash,
         url: data.url,
         ...(loggedUser && {

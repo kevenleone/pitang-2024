@@ -5,7 +5,7 @@ import AuthenticationTokenMissing from '../exceptions/AuthenticationTokenMissing
 import env from '../utils/env.mjs';
 
 export function loggedUserMiddleware(request, response, next) {
-  const { authorization } = request.headers;
+  const { authorization = '' } = request.headers;
 
   const [, token] = authorization.split(' ');
 

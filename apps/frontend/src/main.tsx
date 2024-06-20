@@ -1,9 +1,8 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
-import { SWRConfig } from 'swr';
+import { SWRConfig, Cache } from 'swr';
 
-import AppContextProvider from './context/AppContext';
+import AppContextProvider from './context/AppContext.jsx';
 import AppRoutes from './routes.jsx';
 import fetcher from './services/api.js';
 
@@ -17,10 +16,10 @@ function localStorageProvider() {
     localStorage.setItem(CACHE_KEY, appCache);
   });
 
-  return map;
+  return map as Cache<any>;
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <SWRConfig value={{ fetcher, provider: localStorageProvider }}>
     <AppContextProvider>
       <ChakraProvider

@@ -1,10 +1,18 @@
 import { Box, Link } from '@chakra-ui/react';
 
 import CustomAvatar from './Avatar';
-import dayjs from '../utils/dayjs';
+import dayjs from '@pita.ng/dayjs';
 import env from '../utils/env';
+import { Shortner } from '../types';
 
-export default function Shortner({ createdAt, hash, url, user }) {
+type ShortnerProps = Shortner;
+
+export default function Shortner({
+  createdAt,
+  hash,
+  url,
+  user,
+}: ShortnerProps) {
   return (
     <Box bg='#dadada' p={4} mb={4} borderRadius={4}>
       <Link

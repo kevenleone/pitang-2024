@@ -1,6 +1,11 @@
 import { Flex, Stack, useColorModeValue } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
-const AuthLayout = ({ children }) => (
+type AuthLayoutProps = {
+  children: ReactNode;
+};
+
+const AuthLayout = ({ children }: AuthLayoutProps) => (
   <Flex
     align={'center'}
     bg={useColorModeValue('gray.50', 'gray.800')}

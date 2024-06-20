@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import {
   LineChart,
   Line,
@@ -8,18 +7,12 @@ import {
   Tooltip,
 } from 'recharts';
 
-import { AppContext } from '../../context/AppContext';
-
 const data = [
   { name: 'Page A', uv: 400, pv: 2400, amt: 2400 },
   { name: 'Page B', uv: 500, pv: 5400, amt: 3400 },
 ];
 
 const ChartsAdmin = () => {
-  const context = useContext(AppContext);
-
-  console.log(context);
-
   return (
     <div>
       Charts Admin

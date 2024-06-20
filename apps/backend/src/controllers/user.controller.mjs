@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -6,16 +5,7 @@ import prismaClient from '../utils/prismaClient.mjs';
 import env from '../utils/env.mjs';
 import AppError from '../exceptions/AppError.mjs';
 import AuthenticationError from '../exceptions/AuthenticationError.mjs';
-
-const authSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
-const userSchema = authSchema.extend({
-  firstName: z.string().min(3),
-  lastName: z.string().min(3),
-});
+import { authSchema, userSchema } from '@pita.ng/zod';
 
 class UserController {
   async auth(request, response) {

@@ -1,11 +1,19 @@
-import { createContext, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
+
 import { TOKEN_PATH } from '../utils/constants';
 
-const AppContext = createContext({
-  loggedUser: null,
-});
+export type AppContextState = {
+  loggedUser?: any;
+  setLoggedUser: (loggedUser: any) => void;
+  signOut: () => void;
+  signIn: (token: string) => void;
+};
 
-const parseJwt = (token) => {
+const AppContext = createContext<AppContextState>({
+  loggedUser: null,
+} as AppContextState);
+
+const parseJwt = (token: string) => {
   try {
     return JSON.parse(atob(token.split('.')[1]));
   } catch (e) {
@@ -13,10 +21,14 @@ const parseJwt = (token) => {
   }
 };
 
-const AppContextProvider = ({ children }) => {
+type AppContextProviderProps = {
+  children: ReactNode;
+};
+
+const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const token = sessionStorage.getItem(TOKEN_PATH);
 
-  const [loggedUser, setLoggedUser] = useState(parseJwt(token));
+  const [loggedUser, setLoggedUser] = useState(parseJwt(token || ''));
 
   function signOut() {
     sessionStorage.removeItem(TOKEN_PATH);
@@ -24,13 +36,11 @@ const AppContextProvider = ({ children }) => {
     setLoggedUser(null);
   }
 
-  function signIn(token) {
+  function signIn(token: string) {
     sessionStorage.setItem(TOKEN_PATH, token);
 
     setLoggedUser(parseJwt(token));
   }
-
-  console.log('Carreguei!');
 
   return (
     <AppContext.Provider value={{ loggedUser, setLoggedUser, signOut, signIn }}>

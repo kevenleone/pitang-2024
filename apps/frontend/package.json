@@ -1,11 +1,12 @@
 {
-  "name": "frontend",
+  "name": "@pita.ng/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "tsc:init": "tsc --init",
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -24,7 +25,9 @@
     "react-router-dom": "^6.23.1",
     "recharts": "^2.12.7",
     "swr": "^2.2.5",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@pita.ng/zod": "*",
+    "@pita.ng/dayjs": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
