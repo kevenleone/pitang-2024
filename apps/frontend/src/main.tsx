@@ -2,8 +2,8 @@ import ReactDOM from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SWRConfig, Cache } from 'swr';
 
-import AppContextProvider from './context/AppContext.jsx';
-import AppRoutes from './routes.jsx';
+import AppContextProvider from './context/AppContext.tsx';
+import AppRoutes from './routes.tsx';
 import fetcher from './services/api.js';
 
 const CACHE_KEY = '@pitang-2024/swr';

@@ -28,19 +28,31 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
-import { useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { AppContext } from '../context/AppContext';
 import CustomAvatar from './Avatar';
+
+type ChildrenRoute = {
+  label: string;
+  subLabel: string
+  href: string
+}
+
+type Route = {
+  children?: Array<ChildrenRoute>
+  href?: string;
+  label: string
+}
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
   const { loggedUser, signOut } = useContext(AppContext);
 
   const memoizedRoutes = useMemo(() => {
-    const routes = [
+    const routes: Array<Route> = [
       {
-        label: 'Home',
         href: '/',
+        label: 'Home',
       },
     ];
 
@@ -122,9 +134,7 @@ export default function Navbar() {
                 minW={0}
               >
                 <CustomAvatar
-                  size={40}
                   name={loggedUser.firstName}
-                  variant='beam'
                 />
               </MenuButton>
               <MenuList>
@@ -175,7 +185,9 @@ export default function Navbar() {
   );
 }
 
-const DesktopNav = ({ routes }) => {
+type DesktopNavProps = { routes: Route[] }
+
+const DesktopNav: React.FC<DesktopNavProps> = ({ routes }) => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
@@ -225,7 +237,8 @@ const DesktopNav = ({ routes }) => {
   );
 };
 
-const DesktopSubNav = ({ label, href, subLabel }) => {
+
+const DesktopSubNav: React.FC<ChildrenRoute> = ({ label, href, subLabel }) => {
   return (
     <ChakraLink
       as={Link}
@@ -263,7 +276,7 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
   );
 };
 
-const MobileNav = ({ routes }) => {
+const MobileNav: React.FC<DesktopNavProps> = ({ routes }) => {
   return (
     <Stack
       bg={useColorModeValue('white', 'gray.800')}
@@ -277,7 +290,7 @@ const MobileNav = ({ routes }) => {
   );
 };
 
-const MobileNavItem = ({ label, children, href }) => {
+const MobileNavItem: React.FC<Route> = ({ label, children, href }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (

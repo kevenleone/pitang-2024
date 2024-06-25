@@ -1,7 +1,7 @@
 import { TOKEN_PATH } from '../utils/constants';
 import env from '../utils/env';
 
-class FetcherError extends Error {
+export class FetcherError extends Error {
   original: any;
 
   constructor() {

@@ -14,12 +14,13 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import fetcher from '../services/api';
 import env from '../utils/env';
+import { Shortner } from '../types';
 
 export default function Simple() {
   const [error, setError] = useState(false);
   const [link, setLink] = useState('');
   const [state, setState] = useState('');
-  const [shortner, setShortner] = useState();
+  const [shortner, setShortner] = useState<Shortner>();
   const toast = useToast();
 
   const handleSubmit = async () => {
@@ -48,7 +49,6 @@ export default function Simple() {
         boxShadow={'xl'}
         rounded={'lg'}
         p={6}
-        direction={'column'}
       >
         <Heading
           as={'h2'}

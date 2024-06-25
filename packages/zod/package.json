@@ -1,7 +1,7 @@
 {
   "name": "@pita.ng/zod",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "type": "module",
   "dependencies": {
     "zod": "^3.23.8"

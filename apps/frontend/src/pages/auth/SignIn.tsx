@@ -18,9 +18,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authSchema } from '@pita.ng/zod';
 
-import fetcher from '../../services/api';
+import fetcher, { FetcherError } from '../../services/api';
 import { AppContextState } from '../../context/AppContext';
 import { Dispatch } from 'react';
+import { z } from 'zod';
+
+type AuthSchema = z.infer<typeof authSchema>
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ const SignIn = () => {
   >();
   const toast = useToast();
 
-  const { formState, handleSubmit, register } = useForm({
+  const { formState, handleSubmit, register } = useForm<AuthSchema>({
     defaultValues: {
       email: context.emailAddress,
     },
@@ -40,7 +43,7 @@ const SignIn = () => {
     resolver: zodResolver(authSchema),
   });
 
-  const onSignIn = async (form) => {
+  const onSignIn = async (form: AuthSchema) => {
     try {
       const response = await fetcher.post('/api/auth', form);
 
@@ -54,10 +57,13 @@ const SignIn = () => {
 
       navigate('/', { replace: true });
     } catch (error) {
+      const _error = error as FetcherError;
+
+
       toast({
         status: 'error',
         title: 'Something went wrong...',
-        description: error.cause || error.message,
+        description: (_error.cause || _error.message) as string,
       });
     }
   };

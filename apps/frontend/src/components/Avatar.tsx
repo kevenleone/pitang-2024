@@ -1,5 +1,7 @@
 import { Avatar } from '@chakra-ui/react';
+import { ComponentProps } from 'react';
 
-export default function CustomAvatar(props: any) {
-  return <Avatar size={40} variant='beam' {...props} />;
+export default function CustomAvatar(props: ComponentProps<typeof Avatar>) {
+  return <Avatar {...props} />;
 }
+

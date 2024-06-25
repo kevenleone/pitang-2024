@@ -15,7 +15,7 @@ import {
   FormErrorMessage,
   useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, Dispatch } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -23,7 +23,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema } from '@pita.ng/zod';
 import { AppContextState } from '../../context/AppContext';
 
-import fetcher from '../../services/api';
+import fetcher, { FetcherError } from '../../services/api';
+import { z } from 'zod';
+
+type UserSchema = z.infer<typeof userSchema>
 
 const SignUp = () => {
   const context = useOutletContext<
@@ -33,7 +36,7 @@ const SignUp = () => {
     }
   >();
   const [showPassword, setShowPassword] = useState(false);
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm<UserSchema>({
     mode: 'onBlur',
     resolver: zodResolver(userSchema),
   });
@@ -41,7 +44,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const onSignUp = async (form) => {
+  const onSignUp = async (form: UserSchema) => {
     try {
       await fetcher.post('/api/user', form);
 
@@ -55,10 +58,12 @@ const SignUp = () => {
 
       navigate('/auth/signin', { replace: true });
     } catch (error) {
+      const _error = error as FetcherError
+
       toast({
-        status: 'error',
+        description: (_error.cause || _error.message) as string,
         title: 'Something went wrong...',
-        description: error.cause || error.message,
+        status: 'error',
       });
     }
   };
