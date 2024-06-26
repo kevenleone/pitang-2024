@@ -1,7 +1,7 @@
 {
   "name": "@pita.ng/dayjs",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "type": "module",
   "dependencies": {
     "dayjs": "1.11.11"

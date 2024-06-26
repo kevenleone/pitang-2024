@@ -9,6 +9,10 @@ export type AppContextState = {
   signIn: (token: string) => void;
 };
 
+type AppContextProviderProps = {
+  children: ReactNode;
+};
+
 const AppContext = createContext<AppContextState>({
   loggedUser: null,
 } as AppContextState);
@@ -19,10 +23,6 @@ const parseJwt = (token: string) => {
   } catch (e) {
     return null;
   }
-};
-
-type AppContextProviderProps = {
-  children: ReactNode;
 };
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {

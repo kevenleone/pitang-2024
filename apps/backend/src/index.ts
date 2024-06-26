@@ -28,5 +28,5 @@ server.use('*', (request, response) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Estou rodando na porta ${PORT}`);
+  console.log(`Running Pitang Backend on PORT ${PORT}`);
 });

@@ -5,11 +5,11 @@ import AuthenticationTokenInvalid from '../exceptions/AuthenticationTokenInvalid
 import AuthenticationTokenMissing from '../exceptions/AuthenticationTokenMissing';
 import env from '../utils/env';
 
-type CustomRequest = Request & { logged_user: any }
+type CustomRequest = Request & { logged_user: any };
 
 export function loggedUserMiddleware(
-  request: Request, 
-  response: Response, 
+  request: Request,
+  response: Response,
   next: NextFunction
 ) {
   const { authorization = '' } = request.headers;
@@ -26,8 +26,8 @@ export function loggedUserMiddleware(
 }
 
 export default function authMiddleware(
-  request: Request, 
-  response: Response, 
+  request: Request,
+  response: Response,
   next: NextFunction
 ) {
   const { authorization } = request.headers;
@@ -45,6 +45,10 @@ export default function authMiddleware(
 
     next();
   } catch (error) {
-    throw new AuthenticationTokenInvalid(error.name, 401);
+    if (error instanceof AuthenticationTokenMissing) {
+      throw error;
+    }
+
+    throw new AuthenticationTokenInvalid((error as Error).name, 401);
   }
 }

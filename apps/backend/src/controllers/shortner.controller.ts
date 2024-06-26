@@ -1,22 +1,23 @@
 import crypto from 'node:crypto';
 
-import {Request, Response} from "express"
+import { Request, Response } from 'express';
 import { shortnerSchema } from '@pita.ng/zod';
 import dayjs from '@pita.ng/dayjs';
 
-import prismaClient from '../utils/prismaClient.js';
+import prismaClient from '../utils/prismaClient';
+import { User } from '@prisma/client';
 
 const EXPIRES_1WEEK = 7;
 const EXPIRES_1MONTH = 30;
 
 type RequestCustom = {
-  logged_user: any
-} & Request
+  logged_user: any;
+} & Request;
 
 export default class ShortnerController {
-  async destroy(request: RequestCustom, response: Response) {
+  async destroy(request: Request, response: Response) {
     const { id } = request.params;
-    const loggedUser = request.logged_user;
+    const loggedUser = (request as RequestCustom).logged_user;
 
     try {
       await prismaClient.shortner.delete({
@@ -29,9 +30,9 @@ export default class ShortnerController {
     }
   }
 
-  async getOne(request: RequestCustom, response: Response) {
+  async getOne(request: Request, response: Response) {
     const { id } = request.params;
-    const loggedUser = request.logged_user;
+    const loggedUser = (request as RequestCustom).logged_user;
 
     const shortner = await prismaClient.shortner.findUnique({
       where: { id, userId: loggedUser.id },
@@ -44,8 +45,8 @@ export default class ShortnerController {
     response.send(shortner);
   }
 
-  async index(request: RequestCustom, response: Response) {
-    const loggedUser = request.logged_user;
+  async index(request: Request, response: Response) {
+    const loggedUser = (request as RequestCustom).logged_user;
     let { page = 1, pageSize = 20 } = request.query;
 
     page = parseInt(page as string);
@@ -82,7 +83,7 @@ export default class ShortnerController {
     });
   }
 
-  async redirect(request: RequestCustom, response: Response) {
+  async redirect(request: Request, response: Response) {
     const { hash } = request.params;
 
     const shortner = await prismaClient.shortner.findUnique({
@@ -107,8 +108,8 @@ export default class ShortnerController {
     response.redirect(shortner.url);
   }
 
-  async store(request: RequestCustom, response: Response) {
-    const loggedUser = request.logged_user;
+  async store(request: Request, response: Response) {
+    const loggedUser = (request as RequestCustom).logged_user;
     const shortner = request.body;
 
     const today = dayjs();
@@ -143,14 +144,14 @@ export default class ShortnerController {
     });
 
     if (newShortner.user) {
-      delete newShortner.user.password;
+      delete (newShortner.user as Partial<User>).password;
     }
 
     response.send({ message: 'store', data: newShortner });
   }
 
-  async update(request: RequestCustom, response: Response) {
-    const loggedUser = request.logged_user;
+  async update(request: Request, response: Response) {
+    const loggedUser = (request as RequestCustom).logged_user;
     const { id } = request.params;
     const { url } = request.body;
 

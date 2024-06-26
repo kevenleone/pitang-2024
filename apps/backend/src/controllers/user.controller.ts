@@ -1,11 +1,12 @@
-import {Request, Response} from "express"
+import { Request, Response } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import prismaClient from '../utils/prismaClient.js';
-import env from '../utils/env.js';
-import AppError from '../exceptions/AppError.js';
-import AuthenticationError from '../exceptions/AuthenticationError.js';
+import prismaClient from '../utils/prismaClient';
+import { User } from '@prisma/client';
+import env from '../utils/env';
+import AppError from '../exceptions/AppError';
+import AuthenticationError from '../exceptions/AuthenticationError';
 import { authSchema, userSchema } from '@pita.ng/zod';
 
 class UserController {
@@ -26,7 +27,7 @@ class UserController {
       throw new AuthenticationError('Password Invalid');
     }
 
-    delete user.password;
+    delete (user as Partial<User>).password;
 
     const token = jsonwebtoken.sign(user, env.JWT_SECRET);
 
@@ -86,7 +87,7 @@ class UserController {
       data: { ...user, password: hashedPassword },
     });
 
-    delete newUser.password;
+    delete (newUser as Partial<User>).password;
 
     response.send(newUser);
   }
