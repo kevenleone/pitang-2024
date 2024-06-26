@@ -1,5 +1,5 @@
-import ShortnerController from '../controllers/shortner.controller.mjs';
-import { mixedRouter, publicRouter, privateRouter } from './router.mjs';
+import ShortnerController from '../controllers/shortner.controller.ts';
+import { mixedRouter, publicRouter, privateRouter } from './router.ts';
 
 const shortnerController = new ShortnerController();
 

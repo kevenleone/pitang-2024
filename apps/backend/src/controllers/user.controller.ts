@@ -1,14 +1,15 @@
+import {Request, Response} from "express"
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import prismaClient from '../utils/prismaClient.mjs';
-import env from '../utils/env.mjs';
-import AppError from '../exceptions/AppError.mjs';
-import AuthenticationError from '../exceptions/AuthenticationError.mjs';
+import prismaClient from '../utils/prismaClient.js';
+import env from '../utils/env.js';
+import AppError from '../exceptions/AppError.js';
+import AuthenticationError from '../exceptions/AuthenticationError.js';
 import { authSchema, userSchema } from '@pita.ng/zod';
 
 class UserController {
-  async auth(request, response) {
+  async auth(request: Request, response: Response) {
     const { email, password } = request.body;
 
     authSchema.parse({ email, password });
@@ -32,7 +33,7 @@ class UserController {
     response.send({ token });
   }
 
-  async destroy(request, response) {
+  async destroy(request: Request, response: Response) {
     const { id } = request.params;
 
     try {
@@ -44,7 +45,7 @@ class UserController {
     }
   }
 
-  async getOne(request, response) {
+  async getOne(request: Request, response: Response) {
     const { id } = request.params;
 
     const user = await prismaClient.user.findUnique({ where: { id } });
@@ -56,7 +57,7 @@ class UserController {
     response.send(user);
   }
 
-  async index(request, response) {
+  async index(request: Request, response: Response) {
     const users = await prismaClient.user.findMany();
 
     response.send({
@@ -67,7 +68,7 @@ class UserController {
     });
   }
 
-  async store(request, response) {
+  async store(request: Request, response: Response) {
     const { email } = request.body;
 
     const user = userSchema.parse(request.body);
@@ -90,7 +91,7 @@ class UserController {
     response.send(newUser);
   }
 
-  async update(request, response) {
+  async update(request: Request, response: Response) {
     const { id } = request.params;
 
     let user = await prismaClient.user.findUnique({ where: { id } });

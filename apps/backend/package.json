@@ -2,19 +2,21 @@
   "name": "@pita.ng/backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.mjs",
+  "main": "src/indexts",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=.env src/index.mjs",
+    "dev": "nodemon --env-file=.env src/indexts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "start": "node --env-file=.env src/index.mjs",
+    "start": "node --env-file=.env src/indexts",
     "test": "npm test"
   },
   "author": "Keven Leone",
   "license": "ISC",
   "dependencies": {
+    "@pita.ng/dayjs": "*",
+    "@pita.ng/zod": "*",
     "@prisma/client": "^5.14.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -23,12 +25,12 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "zod": "^3.23.8",
-    "@pita.ng/zod": "*",
-    "@pita.ng/dayjs": "*"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "nodemon": "^3.1.0",
-    "prisma": "^5.14.0"
+    "prisma": "^5.14.0",
+    "typescript": "^5.5.2"
   }
 }

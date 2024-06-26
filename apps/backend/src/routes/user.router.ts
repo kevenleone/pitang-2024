@@ -1,5 +1,5 @@
-import UserController from '../controllers/user.controller.mjs';
-import { publicRouter, privateRouter } from './router.mjs';
+import UserController from '../controllers/user.controller.ts';
+import { publicRouter, privateRouter } from './router.ts';
 
 const userController = new UserController();
 

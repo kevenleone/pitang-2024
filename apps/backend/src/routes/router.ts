@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import authMiddleware, {
   loggedUserMiddleware,
-} from '../middlewares/auth.middleware.mjs';
+} from '../middlewares/auth.middleware.ts';
 
 const mixedRouter = Router();
 const publicRouter = Router();

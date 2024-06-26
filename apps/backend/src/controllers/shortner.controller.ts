@@ -1,15 +1,20 @@
 import crypto from 'node:crypto';
 
+import {Request, Response} from "express"
 import { shortnerSchema } from '@pita.ng/zod';
 import dayjs from '@pita.ng/dayjs';
 
-import prismaClient from '../utils/prismaClient.mjs';
+import prismaClient from '../utils/prismaClient.js';
 
 const EXPIRES_1WEEK = 7;
 const EXPIRES_1MONTH = 30;
 
+type RequestCustom = {
+  logged_user: any
+} & Request
+
 export default class ShortnerController {
-  async destroy(request, response) {
+  async destroy(request: RequestCustom, response: Response) {
     const { id } = request.params;
     const loggedUser = request.logged_user;
 
@@ -24,7 +29,7 @@ export default class ShortnerController {
     }
   }
 
-  async getOne(request, response) {
+  async getOne(request: RequestCustom, response: Response) {
     const { id } = request.params;
     const loggedUser = request.logged_user;
 
@@ -39,12 +44,12 @@ export default class ShortnerController {
     response.send(shortner);
   }
 
-  async index(request, response) {
+  async index(request: RequestCustom, response: Response) {
     const loggedUser = request.logged_user;
     let { page = 1, pageSize = 20 } = request.query;
 
-    page = parseInt(page);
-    pageSize = parseInt(pageSize);
+    page = parseInt(page as string);
+    pageSize = parseInt(pageSize as string);
 
     const skip = (page - 1) * pageSize;
     const where = { userId: loggedUser.id };
@@ -77,7 +82,7 @@ export default class ShortnerController {
     });
   }
 
-  async redirect(request, response) {
+  async redirect(request: RequestCustom, response: Response) {
     const { hash } = request.params;
 
     const shortner = await prismaClient.shortner.findUnique({
@@ -102,7 +107,7 @@ export default class ShortnerController {
     response.redirect(shortner.url);
   }
 
-  async store(request, response) {
+  async store(request: RequestCustom, response: Response) {
     const loggedUser = request.logged_user;
     const shortner = request.body;
 
@@ -144,7 +149,7 @@ export default class ShortnerController {
     response.send({ message: 'store', data: newShortner });
   }
 
-  async update(request, response) {
+  async update(request: RequestCustom, response: Response) {
     const loggedUser = request.logged_user;
     const { id } = request.params;
     const { url } = request.body;

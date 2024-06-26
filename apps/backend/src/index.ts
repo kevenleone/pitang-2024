@@ -4,11 +4,11 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import fallbackMiddleware from './middlewares/fallback.middleware.mjs';
-import { mixedRouter, privateRouter, publicRouter } from './routes/router.mjs';
+import fallbackMiddleware from './middlewares/fallback.middleware';
+import { mixedRouter, privateRouter, publicRouter } from './routes/router';
 
-import './routes/shortner.router.mjs';
-import './routes/user.router.mjs';
+import './routes/shortner.router.ts';
+import './routes/user.router.ts';
 
 const PORT = process.env.PORT || 5000;
 
